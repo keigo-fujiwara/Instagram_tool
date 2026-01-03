@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light" />
+    <title>Instagramカルーセル（4:5）一括生成ツール</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="app theme-education" id="appRoot">
+      <header class="topbar">
+        <div class="topbar__title">
+          <div class="topbar__headline">
+            <span class="igBadge" aria-hidden="true">IG</span>
+            Carousel Studio
+          </div>
+          <div class="topbar__sub">Instagram投稿用カルーセル（4:5 / 1080×1350）を10枚まとめて高画質PNGに</div>
+        </div>
+        <div class="topbar__right"></div>
+      </header>
+
+      <main class="layout">
+        <section class="panel">
+          <div class="panel__section">
+            <div class="panel__headRow">
+              <div class="panel__label panel__label--inline">ジャンル（テーマ）</div>
+              <div class="genreTabs" role="tablist" aria-label="ジャンル選択">
+                <button class="genreTab" type="button" role="tab" aria-selected="true" data-genre="education">教育</button>
+                <button class="genreTab" type="button" role="tab" aria-selected="false" data-genre="programming">プログラミング</button>
+                <button class="genreTab" type="button" role="tab" aria-selected="false" data-genre="selfhelp">自己啓発</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel__section">
+            <div class="panel__label">一括貼り付け（スライド1〜10）</div>
+            <label class="field">
+              <textarea
+                id="bulkPaste"
+                class="control control--textarea"
+                rows="10"
+                placeholder="【入力形式】\n(スライドごとに空行で区切る)\n\n(スライド1)\nタイトル\nサブタイトル（複数行OK）\n\n(スライド2)\nミニタイトル\n本文（複数行OK）\n\n...\n\n(スライド10)\nまとめ1\nまとめ2\nまとめ3"
+              ></textarea>
+            </label>
+            <div class="row row--tight">
+              <label class="check">
+                <input id="bulkIgnoreBlank" type="checkbox" checked />
+                <span>空行を区切りとして扱う</span>
+              </label>
+              <button id="bulkDistributeBtn" class="btn btn--accent" type="button">反映する</button>
+              <button id="bulkClearBtn" class="btn btn--danger" type="button">クリア</button>
+            </div>
+          </div>
+
+          <div class="panel__section">
+            <div class="panel__label">プレビュー（10枚）</div>
+            <div class="preview preview--panel">
+              <div class="preview__viewport" id="previewViewport">
+                <div class="preview__track" id="previewList"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel__section">
+            <div class="panel__label">書き出し</div>
+            <div class="row">
+              <select id="downloadMode" class="control">
+                <option value="zip">10枚をZIPで保存（推奨）</option>
+                <option value="sequential">10枚を連続でダウンロード</option>
+              </select>
+              <button id="downloadAllBtn" class="btn btn--primary" type="button">全10枚を一括ダウンロード</button>
+            </div>
+            <div class="hint">
+              文字のボケを防ぐため、書き出しは <strong>scale: 2</strong> でレンダリングします（高解像度）。
+            </div>
+            <div class="status status--progress" id="downloadStatus" aria-live="polite"></div>
+          </div>
+
+          <footer class="panel__footer">
+            <div class="small">
+              下のプレビューは書き出し（1080×1350）時の見た目に合わせています。
+            </div>
+          </footer>
+        </section>
+      </main>
+
+      <!-- 書き出し用（原寸）: 画面外に配置してhtml2canvasでキャプチャ -->
+      <div class="exportArea" id="exportArea" aria-hidden="true"></div>
+    </div>
+
+    <!-- libs (CDN) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <script src="./app.js"></script>
+  </body>
+</html>
+
+
