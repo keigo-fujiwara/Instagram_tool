@@ -98,8 +98,9 @@ body{
   background: var(--surface);
   box-shadow: var(--shadow);
   padding: 14px 14px 10px;
-  overflow: hidden;
-  max-height: calc(100vh - 110px);
+  /* Allow full page scroll (GitHub Pages/desktop widths were clipping content) */
+  overflow: visible;
+  max-height: none;
   display: flex;
   flex-direction: column;
 }
@@ -336,7 +337,7 @@ body{
   overflow: hidden;
   display:flex;
   flex-direction: column;
-  max-height: calc(100vh - 110px);
+  max-height: none;
 }
 .preview__head{
   padding: 16px 18px;
