@@ -29,10 +29,16 @@
 
 *{ box-sizing: border-box; }
 html,body{ height: 100%; }
+html{
+  /* Never allow the document to expand horizontally */
+  overflow-x: hidden;
+}
 body{
   margin: 0;
   color: var(--text);
   font-family: var(--baseFont);
+  /* ページ全体は横スクロールさせない（プレビュー領域のみ横スクロール） */
+  overflow-x: hidden;
   background:
     radial-gradient(900px 700px at 10% 0%, rgba(131,58,180,0.12), transparent 55%),
     radial-gradient(900px 700px at 90% 10%, rgba(253,29,29,0.10), transparent 55%),
@@ -41,6 +47,7 @@ body{
 }
 
 .app{ min-height: 100%; }
+.app{ max-width: 100%; overflow-x: hidden; }
 
 .topbar{
   display: flex;
@@ -90,6 +97,8 @@ body{
   grid-template-columns: 1fr;
   gap: 18px;
   padding: 10px 16px 20px;
+  max-width: 100%;
+  overflow-x: hidden;
 }
 
 .panel{
@@ -103,10 +112,14 @@ body{
   max-height: none;
   display: flex;
   flex-direction: column;
+  max-width: 100%;
+  min-width: 0;
 }
 .panel__section{
   padding: 12px 10px;
   border-bottom: 1px solid rgba(10,20,40,0.07);
+  max-width: 100%;
+  min-width: 0; /* critical: prevent wide children from expanding the page */
 }
 .panel__section:last-of-type{ border-bottom: 0; }
 .panel__label{
@@ -338,6 +351,9 @@ body{
   display:flex;
   flex-direction: column;
   max-height: none;
+  /* Prevent flex children from forcing the page width (track is wide) */
+  min-width: 0;
+  max-width: 100%;
 }
 .preview__head{
   padding: 16px 18px;
@@ -368,6 +384,9 @@ body{
 }
 .preview__viewport{
   padding: 16px;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0; /* critical: allow shrinking inside flex container */
   overflow-x: auto;
   overflow-y: hidden;
   scroll-snap-type: x mandatory;
@@ -380,7 +399,8 @@ body{
   display:flex;
   gap: 14px;
   align-items: flex-start;
-  width: max-content;
+  /* Keep the track constrained to the viewport width; slides overflow -> viewport scrolls */
+  width: 100%;
 }
 
 .slideWrap{
@@ -393,6 +413,7 @@ body{
   box-shadow: 0 20px 60px rgba(10,20,40,0.12);
   position: relative;
   scroll-snap-align: start;
+  flex: 0 0 auto; /* don't shrink; overflow horizontally within preview viewport */
 }
 .slideWrap > .slide{
   transform: scale(var(--previewScale));
@@ -1162,11 +1183,20 @@ body{
 }
 
 .exportArea{
-  position: absolute;
-  left: -30000px;
+  /* Export DOM should NEVER affect layout/scroll size */
+  position: fixed;
+  left: 0;
   top: 0;
-  width: 1080px;
+  width: 0;
+  height: 0;
+  overflow: hidden;
   pointer-events: none;
+}
+/* Place export slides offscreen with fixed positioning so they don't expand page width */
+.exportArea .slide{
+  position: fixed;
+  left: -99999px;
+  top: 0;
 }
 
 @media (max-width: 1120px){
@@ -1474,6 +1504,24 @@ body{
   padding: 44px 64px;
 }
 
+/* Slide 10: use the full slide body area (no sheet/cta wrapper) */
+.slide10 .slide__body{
+  width: 100%;
+  flex: 1;
+  display:flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: center;
+  gap: 22px;
+  text-align: left;
+}
+.slide10 .slide__body > *{
+  width: 100%;
+  max-width: none;
+  margin-left: 0;
+  margin-right: 0;
+}
+
 .theme-education .slide10 .contentSheet--cta .s10__summary,
 .theme-programming .slide10 .contentSheet--cta .s10__summary,
 .theme-self-improvement .slide10 .contentSheet--cta .s10__summary{
@@ -1616,8 +1664,8 @@ body{
 
 /* (removed) floating profile background variants */
 .s10__avatarImg{
-  width: 96px;
-  height: 96px;
+  width: 132px;
+  height: 132px;
   border-radius: 999px;
   object-fit: cover;
   border: 3px solid rgba(255,255,255,0.16);
@@ -1625,7 +1673,7 @@ body{
   background: rgba(0,0,0,0.08);
 }
 .s10__name{
-  font-size: 44px;
+  font-size: 64px;
   font-weight: 950;
   color: rgba(255,255,255,0.96);
 }
@@ -1633,12 +1681,12 @@ body{
 .s10__summaryBlock{
   border-radius: 26px;
   border: 1px solid rgba(255,255,255,0.14);
-  padding: 22px 26px;
+  padding: 28px 32px;
   background: rgba(0,0,0,0.10);
   width: 100%;
 }
 .s10__summaryTitle{
-  font-size: 28px;
+  font-size: 36px;
   font-weight: 900;
   letter-spacing: 0.10em;
   text-transform: uppercase;
@@ -1652,7 +1700,7 @@ body{
   text-align: left;
 }
 .s10__summaryLine{
-  font-size: 34px;
+  font-size: 48px;
   line-height: 1.25;
   color: rgba(255,255,255,0.92);
   word-break: break-word;
@@ -1680,13 +1728,13 @@ body{
   text-align: left;
 }
 .s10__pitchLine{
-  font-size: 30px;
+  font-size: 40px;
   line-height: 1.30;
   color: rgba(255,255,255,0.92);
 }
 .s10__pitchLink{
   margin-top: 4px;
-  font-size: 22px;
+  font-size: 30px;
   line-height: 1.35;
   color: rgba(255,255,255,0.72);
   text-align: center;
@@ -1700,7 +1748,7 @@ body{
   background: rgba(0,0,0,0.10);
 }
 .s10__followMain{
-  font-size: 36px;
+  font-size: 50px;
   font-weight: 950;
   color: rgba(255,255,255,0.96);
   line-height: 1.20;
@@ -1717,7 +1765,7 @@ body{
   background: rgba(0,0,0,0.12);
   color: rgba(255,255,255,0.90);
   font-family: var(--monoFont);
-  font-size: 22px;
+  font-size: 30px;
 }
 
 /* Genre sync for slide10 */
@@ -1750,59 +1798,7 @@ body{
 .theme-programming .slide10 .s10__handle{ border-color: rgba(0,229,255,0.20); background: rgba(0,229,255,0.10); }
 
 /* Programming slide10: match education sizing rules */
-.theme-programming .slide10 .contentSheet--cta{
-  padding: 44px 64px;
-  gap: 18px;
-}
-.theme-programming .slide10 .s10__avatarImg{
-  width: 96px;
-  height: 96px;
-}
-.theme-programming .slide10 .s10__name{
-  font-size: 44px;
-}
-.theme-programming .slide10 .s10__summaryBlock{
-  padding: 22px 26px;
-  border-radius: 26px;
-}
-.theme-programming .slide10 .s10__pitch{
-  padding: 22px 24px;
-  border-radius: 18px;
-  gap: 10px;
-}
-.theme-programming .slide10 .s10__follow{
-  padding: 22px 24px;
-  border-radius: 18px;
-}
-.theme-programming .slide10 .s10__summaryTitle{
-  font-size: 28px;
-  letter-spacing: 0.10em;
-}
-.theme-programming .slide10 .s10__summary{
-  margin-top: 14px;
-  gap: 10px;
-}
-.theme-programming .slide10 .s10__summaryLine{
-  font-size: 34px;
-  line-height: 1.25;
-}
-.theme-programming .slide10 .s10__pitchLine{
-  font-size: 30px;
-  line-height: 1.30;
-}
-.theme-programming .slide10 .s10__pitchLink{
-  margin-top: 4px;
-  font-size: 22px;
-  line-height: 1.35;
-}
-.theme-programming .slide10 .s10__handle{
-  margin-top: 16px;
-  padding: 10px 14px;
-  font-size: 22px;
-}
-.theme-programming .slide10 .s10__followMain{
-  font-size: 36px;
-}
+/* NOTE: programming slide10 uses the same base sizing as other themes (no per-theme font-size overrides). */
 
 .theme-self-improvement .slide10{
   background:
@@ -1814,7 +1810,7 @@ body{
   background: rgba(255,255,255,0.90);
   border-color: rgba(255,176,46,0.14);
 }
-.theme-self-improvement .slide10 .s10__summaryTitle{ color: rgba(18,20,23,0.88); }
+.theme-self-improvement .slide10 .s10__summaryTitle{ color: color-mix(in srgb, var(--t-accent) 88%, #111827); }
 .theme-self-improvement .slide10 .s10__summaryLine,
 .theme-self-improvement .slide10 .s10__name,
 .theme-self-improvement .slide10 .s10__pitchLine,
@@ -2067,14 +2063,34 @@ body{
   border-color: rgba(255,176,46,0.14);
 }
 .theme-self-improvement .slide::after{
-  /* Sun (top-right) + Arrow (bottom-left). Curves removed. */
-  background-image:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220' viewBox='0 0 220 220'%3E%3Cg fill='none' stroke='%23FFB02E' stroke-opacity='0.24' stroke-width='10' stroke-linecap='round'%3E%3Ccircle cx='110' cy='110' r='44'/%3E%3Cpath d='M110 22v24M110 174v24M22 110h24M174 110h24M52 52l16 16M168 168l-16-16M52 168l16-16M168 52l-16 16'/%3E%3C/g%3E%3C/svg%3E"),
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240' viewBox='0 0 240 240'%3E%3Cg fill='none' stroke='%23FFB02E' stroke-opacity='0.24' stroke-width='14' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M60 180L180 60'/%3E%3Cpath d='M180 60v56'/%3E%3Cpath d='M180 60h-56'/%3E%3C/g%3E%3C/svg%3E");
-  background-repeat: no-repeat, no-repeat;
-  background-position: calc(100% - 96px) 92px, 92px calc(100% - 92px);
-  background-size: 220px 220px, 240px 240px;
+  /* NOTE: selfhelp icons are now real DOM (see .selfCornerIcons) for stable html2canvas export */
+  background-image: none;
   opacity: 1;
+}
+
+/* Self-improvement corner icons (stable export) */
+.selfCornerIcons{
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  z-index: 2; /* above frame, below content */
+  display:none;
+}
+.theme-self-improvement .selfCornerIcons{ display:block; }
+.selfCornerIcon{
+  position:absolute;
+}
+.selfCornerIcon--sun{
+  width: 220px;
+  height: 220px;
+  right: 96px;
+  top: 92px;
+}
+.selfCornerIcon--arrow{
+  width: 240px;
+  height: 240px;
+  left: 92px;
+  bottom: 92px;
 }
 .theme-self-improvement .s1__title{
   font-weight: 950;

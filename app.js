@@ -125,6 +125,14 @@ function createSlideEl(i) {
     <img class="cornerIcon cornerIcon--bulb" data-role="cornerBulb" alt="" aria-hidden="true" decoding="sync" loading="eager" />
   `;
 
+  // Self-improvement theme: sun + arrow (use DOM images for stable export; background-position can shift in html2canvas)
+  const selfCornerIcons = document.createElement("div");
+  selfCornerIcons.className = "selfCornerIcons";
+  selfCornerIcons.innerHTML = `
+    <img class="selfCornerIcon selfCornerIcon--sun" data-role="selfSun" alt="" aria-hidden="true" decoding="sync" loading="eager" />
+    <img class="selfCornerIcon selfCornerIcon--arrow" data-role="selfArrow" alt="" aria-hidden="true" decoding="sync" loading="eager" />
+  `;
+
   const corner = document.createElement("div");
   corner.className = "slide__cornerMark";
   corner.innerHTML = `<div class="cornerMark__dot"></div>`;
@@ -184,9 +192,6 @@ function createSlideEl(i) {
     const body = document.createElement("div");
     body.className = "slide__body";
 
-    const sheet = document.createElement("div");
-    sheet.className = "contentSheet contentSheet--cta";
-
     const profile = document.createElement("div");
     profile.className = "s10__profile";
 
@@ -216,7 +221,7 @@ function createSlideEl(i) {
       </div>
     `;
 
-    sheet.appendChild(summaryBlock);
+    body.appendChild(summaryBlock);
 
     const pitch = document.createElement("div");
     pitch.className = "s10__pitch";
@@ -233,9 +238,8 @@ function createSlideEl(i) {
       <div class="s10__followMain">良かったらフォローしてください！</div>
     `;
 
-    sheet.appendChild(pitch);
-    sheet.appendChild(follow);
-    body.appendChild(sheet);
+    body.appendChild(pitch);
+    body.appendChild(follow);
 
     inner.appendChild(top);
     inner.appendChild(body);
@@ -289,6 +293,7 @@ function createSlideEl(i) {
   slide.appendChild(wedge);
   slide.appendChild(frame);
   slide.appendChild(cornerIcons);
+  slide.appendChild(selfCornerIcons);
   slide.appendChild(corner);
   slide.appendChild(inner);
   slide.appendChild(credit);
@@ -326,6 +331,29 @@ function buildBulbSvg(strokeHex) {
   `.trim();
 }
 
+function buildSunSvg(strokeHex) {
+  return `
+    <svg xmlns="http://www.w3.org/2000/svg" width="220" height="220" viewBox="0 0 220 220">
+      <g fill="none" stroke="${strokeHex}" stroke-opacity="0.24" stroke-width="10" stroke-linecap="round">
+        <circle cx="110" cy="110" r="44"/>
+        <path d="M110 22v24M110 174v24M22 110h24M174 110h24M52 52l16 16M168 168l-16-16M52 168l16-16M168 52l-16 16"/>
+      </g>
+    </svg>
+  `.trim();
+}
+
+function buildArrowSvg(strokeHex) {
+  return `
+    <svg xmlns="http://www.w3.org/2000/svg" width="240" height="240" viewBox="0 0 240 240">
+      <g fill="none" stroke="${strokeHex}" stroke-opacity="0.24" stroke-width="14" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M60 180L180 60"/>
+        <path d="M180 60v56"/>
+        <path d="M180 60h-56"/>
+      </g>
+    </svg>
+  `.trim();
+}
+
 function updateCornerIconsForTheme() {
   if (!els.appRoot) return;
   // Corner icons are used only for education theme
@@ -346,6 +374,26 @@ function updateCornerIconsForTheme() {
   for (let i = 0; i < exportSlideEls.length; i++) applyToSlide(exportSlideEls[i]);
 }
 
+function updateSelfCornerIconsForTheme() {
+  if (!els.appRoot) return;
+  // Self corner icons are used only for selfhelp theme
+  if (state.genre !== "selfhelp") return;
+  const cs = window.getComputedStyle(els.appRoot);
+  const accent = (cs.getPropertyValue("--t-accent") || "").trim() || "#FFB02E";
+  const sunUrl = svgToDataUrl(buildSunSvg(accent));
+  const arrowUrl = svgToDataUrl(buildArrowSvg(accent));
+
+  const applyToSlide = (slideEl) => {
+    const s = slideEl?.querySelector('[data-role="selfSun"]');
+    const a = slideEl?.querySelector('[data-role="selfArrow"]');
+    if (s) s.src = sunUrl;
+    if (a) a.src = arrowUrl;
+  };
+
+  for (let i = 0; i < previewSlideEls.length; i++) applyToSlide(previewSlideEls[i]);
+  for (let i = 0; i < exportSlideEls.length; i++) applyToSlide(exportSlideEls[i]);
+}
+
 function escapeHtml(s) {
   return String(s)
     .replaceAll("&", "&amp;")
@@ -360,6 +408,7 @@ function renderAll() {
   const root = els.appRoot;
   applyThemeClass(root, state.genre);
   updateCornerIconsForTheme();
+  updateSelfCornerIconsForTheme();
   updateGenreTabsUi();
 
   // slide 1
