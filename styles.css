@@ -211,10 +211,8 @@ body{
     inset 0 1px 0 rgba(255,255,255,0.55);
 }
 .genreTab[aria-selected="true"]{
-  border-color: color-mix(in srgb, var(--t-accent) 55%, rgba(10,20,40,0.10));
-  background:
-    radial-gradient(220px 120px at 25% 20%, color-mix(in srgb, var(--t-accent) 35%, transparent), transparent 55%),
-    linear-gradient(180deg, color-mix(in srgb, var(--t-accent) 88%, #111827), color-mix(in srgb, var(--t-accent) 72%, #111827));
+  border-color: var(--t-accent);
+  background: linear-gradient(180deg, var(--t-accent), rgba(17,24,39,0.92));
   color: #fff;
   filter: saturate(1.05);
 }
@@ -255,38 +253,26 @@ body{
 .btn:disabled:hover{ transform: none; }
 .btn:disabled:active{ transform: none; }
 .btn--primary{
-  border-color: color-mix(in srgb, var(--t-accent, var(--igBlue)) 55%, rgba(10,20,40,0.10));
-  background:
-    radial-gradient(240px 120px at 25% 20%, color-mix(in srgb, var(--t-accent, var(--igBlue)) 35%, transparent), transparent 55%),
-    linear-gradient(
-      180deg,
-      color-mix(in srgb, var(--t-accent, var(--igBlue)) 88%, #111827),
-      color-mix(in srgb, var(--t-accent, var(--igBlue)) 72%, #111827)
-    );
+  border-color: var(--t-accent, var(--igBlue));
+  background: linear-gradient(180deg, var(--t-accent, var(--igBlue)), rgba(17,24,39,0.92));
   color: #fff;
 }
 .btn--primary:hover{
   /* invert to light bg + accent text */
-  background: color-mix(in srgb, var(--t-accent, var(--igBlue)) 14%, #ffffff);
-  color: color-mix(in srgb, var(--t-accent, var(--igBlue)) 85%, #111827);
-  border-color: color-mix(in srgb, var(--t-accent, var(--igBlue)) 45%, rgba(10,20,40,0.10));
+  background: rgba(255,255,255,1);
+  color: var(--t-accent, var(--igBlue));
+  border-color: var(--t-accent, var(--igBlue));
   filter: none;
 }
 .btn--accent{
-  border-color: color-mix(in srgb, var(--t-accent, var(--igBlue)) 45%, rgba(10,20,40,0.10));
-  background:
-    radial-gradient(240px 120px at 25% 20%, color-mix(in srgb, var(--t-accent, var(--igBlue)) 28%, transparent), transparent 55%),
-    linear-gradient(
-      180deg,
-      color-mix(in srgb, var(--t-accent, var(--igBlue)) 82%, #111827),
-      color-mix(in srgb, var(--t-accent, var(--igBlue)) 66%, #111827)
-    );
+  border-color: var(--t-accent, var(--igBlue));
+  background: linear-gradient(180deg, var(--t-accent, var(--igBlue)), rgba(17,24,39,0.92));
   color: #fff;
 }
 .btn--accent:hover{
-  background: color-mix(in srgb, var(--t-accent, var(--igBlue)) 12%, #ffffff);
-  color: color-mix(in srgb, var(--t-accent, var(--igBlue)) 85%, #111827);
-  border-color: color-mix(in srgb, var(--t-accent, var(--igBlue)) 38%, rgba(10,20,40,0.10));
+  background: rgba(255,255,255,1);
+  color: var(--t-accent, var(--igBlue));
+  border-color: var(--t-accent, var(--igBlue));
   filter: none;
 }
 .btn--danger{
@@ -295,7 +281,7 @@ body{
   color: #fff;
 }
 .btn--danger:hover{
-  background: color-mix(in srgb, rgba(239,68,68,0.95) 12%, #ffffff);
+  background: rgba(239,68,68,0.10);
   color: rgba(239,68,68,0.95);
   border-color: rgba(239,68,68,0.55);
   filter: none;
@@ -1810,7 +1796,7 @@ body{
   background: rgba(255,255,255,0.90);
   border-color: rgba(255,176,46,0.14);
 }
-.theme-self-improvement .slide10 .s10__summaryTitle{ color: color-mix(in srgb, var(--t-accent) 88%, #111827); }
+.theme-self-improvement .slide10 .s10__summaryTitle{ color: var(--t-accent); }
 .theme-self-improvement .slide10 .s10__summaryLine,
 .theme-self-improvement .slide10 .s10__name,
 .theme-self-improvement .slide10 .s10__pitchLine,
